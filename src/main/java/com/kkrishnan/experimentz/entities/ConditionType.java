@@ -7,13 +7,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class IngredientType {
+public class ConditionType {
+
 	@Id
 	@Column
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	@Column
-	private String name;
+	private String conditionName;
 
 	public int getId() {
 		return id;
@@ -23,11 +24,12 @@ public class IngredientType {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public String getConditionName() {
+		return conditionName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setConditionName(String conditionName) {
+		this.conditionName = conditionName;
 	}
+
 }

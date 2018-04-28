@@ -1,7 +1,6 @@
 package com.kkrishnan.experimentz.controllers;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,43 +12,59 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.kkrishnan.experimentz.dao.ExperimentRepository;
-import com.kkrishnan.experimentz.dao.IngredientTypeRepository;
-import com.kkrishnan.experimentz.entities.Experiment;
-import com.kkrishnan.experimentz.entities.Ingredient;
-import com.kkrishnan.experimentz.entities.IngredientType;
+import com.kkrishnan.experimentz.dao.ConditionTypeRepository;
+import com.kkrishnan.experimentz.dao.MeasurementTypeRepository;
+import com.kkrishnan.experimentz.dao.TestRepository;
+import com.kkrishnan.experimentz.entities.ConditionType;
+import com.kkrishnan.experimentz.entities.Measurement;
+import com.kkrishnan.experimentz.entities.MeasurementType;
+import com.kkrishnan.experimentz.entities.Reading;
+import com.kkrishnan.experimentz.entities.Test;
 import com.kkrishnan.experimentz.entities.User;
 
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RestController
-@RequestMapping({ "/experimentApi" })
+@RequestMapping({ "/testApi" })
 public class ExperimentController {
 
 	@Autowired
-	private ExperimentRepository experimentRepository;
+	private TestRepository testRepository;
 
 	@Autowired
-	private IngredientTypeRepository ingredientTypeRepository;
+	private MeasurementTypeRepository measurementTypeRepository;
+
+	@Autowired
+	private ConditionTypeRepository conditionTypeRepository;
 
 	@PostMapping
-	public Experiment create(@RequestBody Experiment experiment) {
-		for (Ingredient ingredient : experiment.getIngredients()) {
-			IngredientType type = ingredient.getType();
-			type.setId(ingredientTypeRepository.findByName(type.getName()).getId());
+	public Test create(@RequestBody Test test) {
+		for (Measurement measurement : test.getMeasurements()) {
+			MeasurementType type = measurement.getType();
+			type.setId(measurementTypeRepository.findByMeasurementName(type.getMeasurementName()).getId());
+			for (Reading reading : measurement.getReadings()) {
+				ConditionType condition = reading.getCondition();
+				condition.setId(conditionTypeRepository.findByConditionName(condition.getConditionName()).getId());
+			}
 		}
-		return experimentRepository.save(experiment);
+		return testRepository.save(test);
 	}
 
 	@GetMapping
-	public List<Experiment> getUserExperiments(@RequestParam User user) {
-		List<Experiment> e = experimentRepository.findByUser(user);
+	public List<Test> getUserExperiments(@RequestParam User user) {
+		List<Test> e = testRepository.findByUser(user);
 
 		return e;
 	}
 
-	@RequestMapping(value = "/ingredientTypes", method = RequestMethod.GET)
-	public List<String> getIngredients() {
+	@RequestMapping(value = "/measurementTypes", method = RequestMethod.GET)
+	public List<String> getMeasurements() {
 
-		return ingredientTypeRepository.findAll().stream().map(i -> i.getName()).collect(Collectors.toList());
+		return measurementTypeRepository.findAllNames();
+	}
+
+	@RequestMapping(value = "/conditionTypes", method = RequestMethod.GET)
+	public List<String> getConditions() {
+
+		return conditionTypeRepository.findAllNames();
 	}
 }

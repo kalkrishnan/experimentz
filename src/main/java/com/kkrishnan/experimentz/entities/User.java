@@ -27,7 +27,7 @@ public class User {
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JsonIgnore
-	private Set<Experiment> experiments;
+	private Set<Test> experiments;
 
 	public int getId() {
 		return id;
@@ -53,11 +53,11 @@ public class User {
 		this.password = password;
 	}
 
-	public Set<Experiment> getExperiments() {
+	public Set<Test> getExperiments() {
 		return experiments;
 	}
 
-	public void setExperiments(Set<Experiment> experiments) {
+	public void setExperiments(Set<Test> experiments) {
 		this.experiments = experiments;
 	}
 
