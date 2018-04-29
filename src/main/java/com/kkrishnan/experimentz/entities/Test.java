@@ -1,6 +1,7 @@
 package com.kkrishnan.experimentz.entities;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -25,10 +26,14 @@ public class Test {
 	private int id;
 	@Column
 	private String name;
+	@Column
+	private String formulaId;
+	@Column
+	private String version;
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	private Set<Measurement> measurements;
+	private List<Measurement> measurements;
 	@Column(name = "operation")
 	private String operation;
 	@Column(name = "timestamp")
@@ -61,11 +66,11 @@ public class Test {
 		this.user = user;
 	}
 
-	public Set<Measurement> getMeasurements() {
+	public List<Measurement> getMeasurements() {
 		return measurements;
 	}
 
-	public void setMeasurements(Set<Measurement> measurements) {
+	public void setMeasurements(List<Measurement> measurements) {
 		this.measurements = measurements;
 	}
 
@@ -91,6 +96,22 @@ public class Test {
 
 	public void setSpecification(String specification) {
 		this.specification = specification;
+	}
+
+	public String getFormulaId() {
+		return formulaId;
+	}
+
+	public void setFormulaId(String formulaId) {
+		this.formulaId = formulaId;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
 	}
 
 	@PrePersist
