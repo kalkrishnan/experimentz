@@ -1,5 +1,6 @@
 package com.kkrishnan.experimentz.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -39,24 +40,25 @@ public class TestSearchRepositoryImpl implements TestSearchRepository {
 		CriteriaBuilder criteriaBuilderObj = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Object> queryObj = criteriaBuilderObj.createQuery();
 		Root<Test> from = queryObj.from(Test.class);
+		List<Predicate> predicates = new ArrayList<Predicate>();
 		if (searchCriteria.getUserName() != null) {
 			User user = userRepository.findByUserName(searchCriteria.getUserName());
-			queryObj.where(criteriaBuilderObj.equal(from.get("user"), user));
+			predicates.add(criteriaBuilderObj.equal(from.get("user"), user));
 		}
 		if (searchCriteria.getFormulaId() != null) {
-			queryObj.where(criteriaBuilderObj.equal(from.get("formulaId"), searchCriteria.getFormulaId()));
+			predicates.add(criteriaBuilderObj.equal(from.get("formulaId"), searchCriteria.getFormulaId()));
 		}
 		if (searchCriteria.getVersion() != null) {
-			queryObj.where(criteriaBuilderObj.equal(from.get("version"), searchCriteria.getVersion()));
+			predicates.add(criteriaBuilderObj.equal(from.get("version"), searchCriteria.getVersion()));
 		}
 		if (searchCriteria.getMeasurementName() != null) {
 			MeasurementType type = measurementTypeRepository.findByMeasurementName(searchCriteria.getMeasurementName());
 			List<Measurement> measurements = measurementRepository.findByType(type);
 			Expression<List<Measurement>> measurementExpression = from.join("measurements");
 			Predicate measurementPredicate = measurementExpression.in(measurements);
-			queryObj.where(measurementPredicate);
+			predicates.add(measurementPredicate);
 		}
-		queryObj.select(from);
+		queryObj.select(from).where(predicates.toArray(new Predicate[] {}));
 		Query query = entityManager.createQuery(queryObj);
 		return query.getResultList();
 	}
