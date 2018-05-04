@@ -1,11 +1,19 @@
 package com.kkrishnan.experimentz.dao;
 
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 public class SearchCriteria {
 
 	private String userName;
 	private String measurementName;
 	private String version;
 	private String formulaId;
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+	private Date startDate;
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+	private Date endDate;
 
 	public String getUserName() {
 		return userName;
@@ -39,15 +47,31 @@ public class SearchCriteria {
 		this.formulaId = formulaId;
 	}
 
-	@Override
-	public String toString() {
-		return "SearchCriteria [userName=" + userName + ", measurementName=" + measurementName + ", version=" + version
-				+ ", formulaId=" + formulaId + "]";
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 
 	public boolean isValid() {
 		return !(this.formulaId == null && this.version == null && this.measurementName == null
-				&& this.userName == null);
+				&& this.userName == null && this.startDate == null && this.endDate == null);
+	}
+
+	@Override
+	public String toString() {
+		return "SearchCriteria [userName=" + userName + ", measurementName=" + measurementName + ", version=" + version
+				+ ", formulaId=" + formulaId + ", startDate=" + startDate + ", endDate=" + endDate + "]";
 	}
 
 }
